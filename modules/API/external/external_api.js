@@ -314,6 +314,7 @@ export default class JitsiMeetExternalAPI extends EventEmitter {
         this._participants = {};
         this._myUserID = undefined;
         this._onStageParticipant = undefined;
+        this._test = 'test'
         this._setupListeners();
         id++;
     }
