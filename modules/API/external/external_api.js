@@ -351,6 +351,7 @@ export default class JitsiMeetExternalAPI extends EventEmitter {
 
             v.id = 'local_video_capture';
             v.autoplay = true;
+            v.style.display = 'none'
             document.body.appendChild(v);
         }
 

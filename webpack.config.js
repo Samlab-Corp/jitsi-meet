@@ -290,7 +290,7 @@ module.exports = [
             ...config.plugins,
             ...getBundleAnalyzerPlugin('external_api')
         ],
-        performance: getPerformanceHints(35 * 1024)
+        performance: getPerformanceHints(1024 * 1024)
     })
 ];
 

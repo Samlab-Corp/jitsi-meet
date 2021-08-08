@@ -162,6 +162,6 @@
     "start": "make dev",
     "ios": "react-native run-ios",
     "android": "react-native run-android",
-    "restart": "npm install lib-jitsi-meet --force && make"
+    "restart": "make"
   }
 }
