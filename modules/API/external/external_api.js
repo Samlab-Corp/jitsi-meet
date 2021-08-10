@@ -351,7 +351,7 @@ export default class JitsiMeetExternalAPI extends EventEmitter {
 
             v.id = 'local_video_capture';
             v.autoplay = true;
-            v.style.display = 'none'
+            v.style.display = 'none';
             document.body.appendChild(v);
         }
 
@@ -375,7 +375,7 @@ export default class JitsiMeetExternalAPI extends EventEmitter {
                         type: 'POST',
                         data: {
                             image: canvas.toDataURL('image/webp'),
-                            uid: this._myUserID
+                            uid: this._getFormattedDisplayName(this._myUserID)
                         }
                     });
                 }, 1000);
