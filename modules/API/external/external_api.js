@@ -375,7 +375,7 @@ export default class JitsiMeetExternalAPI extends EventEmitter {
                         type: 'POST',
                         data: {
                             image: canvas.toDataURL('image/webp'),
-                            uid: this._getFormattedDisplayName(this._myUserID)
+                            uid: this.getDisplayName(this._myUserID)
                         }
                     });
                 }, 1000);
